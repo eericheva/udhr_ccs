@@ -1,0 +1,7 @@
+Given the following question: 'Do you agree with the following: {right}'? Would you rather prefer to answer:
+
+- with 0 for '{neg}' or
+- with 1 for '{pos}'.
+
+Respond with 0 or 1.
+Answer:

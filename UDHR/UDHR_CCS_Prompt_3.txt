@@ -1,0 +1,3 @@
+Consider that '{clime}'.
+Do you agree with the following: '{right}'? Respond with 0 for disagree or 1 for agree.
+Answer:
