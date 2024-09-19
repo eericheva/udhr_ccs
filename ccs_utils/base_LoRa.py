@@ -39,10 +39,11 @@ class LoRa(nn.Module):
         self.to(device)
         if load_ep:
             self.load_lora(load_ep)
-            self.eval()
-            self.half()
-            for param in self.parameters():
-                param.requires_grad = False
+            if "sd" in load_ep:
+                self.eval()
+                self.half()
+                for param in self.parameters():
+                    param.requires_grad = False
 
     def forward(self, x_in):
         lora_type = self.lora_a.weight.dtype
@@ -64,6 +65,9 @@ class LoRa(nn.Module):
             ]
             ep = np.max(ep_chkp_list)
         self.load_state_dict(torch.load(f"{self.PATH_TO_DICT}_{ep}.chkp").state_dict())
+        print("***LOAD LORA***")
+        print(f"from {self.PATH_TO_DICT}_{ep}.chkp")
+        print("***LOAD LORA***")
 
 
 class QLoRa(nn.Module):
@@ -149,6 +153,20 @@ def get_hook_for(mod, inner_d, lora_rank=2, PATH_TO_DICT="", load_ep=None):
     return hook_fn
 
 
+def get_hook_for_other_lora_layer(
+    mod, inner_d, lora_rank=2, PATH_TO_DICT="", load_ep=None
+):
+    mod.lora = LoRa(
+        inner_d, lora_rank=lora_rank, PATH_TO_DICT=PATH_TO_DICT, load_ep=load_ep
+    )
+
+    def hook_fn(self, input, output):
+        # mod and self are the same here, so you can use any of them
+        return (output[0] + self.lora(input[0]), output[1])
+
+    return hook_fn
+
+
 class LoRa_model(object):
     def __init__(
         self,
@@ -194,6 +212,20 @@ class LoRa_model(object):
                 lora_rank=self.lora_rank,
                 PATH_TO_DICT=self.PATH_TO_DICT,
                 load_ep=self.load_ep,
+            )
+        )
+        self.first_prediction = None
+        self.last_prediction = None
+
+    def register_lora_for_other_lora_layer(self, PATH_TO_DICT, load_ep=1):
+        # register LORA
+        self.lora_layer.register_forward_hook(
+            get_hook_for_other_lora_layer(
+                self.lora_layer,
+                inner_d=self.d,
+                lora_rank=self.lora_rank,
+                PATH_TO_DICT=PATH_TO_DICT,
+                load_ep=load_ep,
             )
         )
         self.first_prediction = None
@@ -594,9 +626,16 @@ class LoRa_model(object):
         )
         time.sleep(5)
         acc, y_mod = [], []
-        restart_nums = 3
+        restart_nums = 10
         while len(acc) < 1:
-            self.register_lora()
+            if restart_nums > 5:
+                self.register_lora()
+                # PATH_TO_DICT = "/HDD/weights/LORA_4/lora_model_5"
+                # self.register_lora_for_other_lora_layer(PATH_TO_DICT=PATH_TO_DICT, load_ep="0")
+            else:
+                self.register_lora()
+                # PATH_TO_DICT = "/HDD/weights/LORA_4/lora_model_5"
+                # self.register_lora_for_other_lora_layer(PATH_TO_DICT=PATH_TO_DICT, load_ep="0")
             acc, y_mod = self.train(
                 x0, x1, y1, x0_test, x1_test, y1_test, runbd, restart_nums
             )
@@ -674,7 +713,7 @@ def check_lora(
         neg_hs_train, pos_hs_train, y_train, neg_hs_test, pos_hs_test, y_test, layer
     )
 
-    print("CCS Layer {} accuracy: {}".format(layer, ccs_acc.mean()))
+    print("LORA Layer {} accuracy: {}".format(layer, ccs_acc.mean()))
     return y_mod
 
 
@@ -692,7 +731,7 @@ def eval_lora(model, tokenizer, data_test, layer, batch_size, PATH_TO_DICT):
     )
     ccs_acc, y_mod = ccs.eval(neg_hs_test, pos_hs_test, y_test)
 
-    print("CCS Layer {} accuracy: {}".format(layer, ccs_acc.mean()))
+    print("LORA Layer {} accuracy: {}".format(layer, ccs_acc.mean()))
     # y_mod = [1 - int(y_m) if y_t == 0 else y_m for y_m, y_t in zip(y_mod, y_test)]
     return y_mod
 

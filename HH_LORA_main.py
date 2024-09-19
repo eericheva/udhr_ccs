@@ -22,7 +22,9 @@ run_type = "eval_"
 def do_lora():
     print(model_name)
     BTC_SIZE = 2  # 2!!!
-    prompts_btc_train, prompts_btc_test = make_HH_prompts(model_name, BTC_SIZE=6)
+    prompts_btc_train, prompts_btc_test = make_HH_prompts(
+        post_name=model_name, BTC_SIZE=6
+    )
     prompts_btc_test = prompts_btc_train + prompts_btc_test
     prompts_btc_test = prompts_btc_test[:200]
 

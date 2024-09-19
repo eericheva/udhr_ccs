@@ -43,6 +43,9 @@ class CCS(object):
         self.initialize_probe()
         self.best_probe = copy.deepcopy(self.probe)
 
+        self.first_prediction = None
+        self.last_prediction = None
+
     def initialize_probe(self):
         if self.linear:
             self.probe = nn.Sequential(nn.Linear(self.d, 1), nn.Sigmoid())
@@ -107,11 +110,13 @@ class CCS(object):
         avg_confidence = 0.5 * (p0 + (1 - p1))
         predictions = (avg_confidence.detach().cpu().numpy() < 0.5).astype(int)[:, 0]
         acc = (predictions == y_test).mean()
-        # acc = max(acc, 1 - acc)
-        if acc < 1 - acc:
+        if (acc < 1 - acc) and self.first_prediction is None:
+            self.first_prediction = "inverse"
+        elif (acc > 1 - acc) and self.first_prediction is None:
+            self.first_prediction = "stright"
+        if self.first_prediction == "inverse":
             acc = 1 - acc
             predictions = 1 - predictions
-
         return acc, predictions
 
     def train(self, x0_train, x1_train, y_train, x0_test, x1_test, y_test, runbd):
@@ -142,6 +147,7 @@ class CCS(object):
             desc=f"Train CCS Loss: {np.inf}, ValLoss : {np.inf}",
         )
         for epoch in progress_bar:
+            self.first_prediction = None
             p0, p1 = self.forward(x0), self.forward(x1)
             p0_test, p1_test = self.forward(x0_t), self.forward(x1_t)
             validation_loss = self.get_loss(p0_test, p1_test)
@@ -222,7 +228,9 @@ def check_ccs(model, tokenizer, data_train, data_test, layer, model_type):
 
     # Evaluate
     p0, p1 = ccs.forward(neg_hs_test), ccs.forward(pos_hs_test)
+    ccs.first_prediction = None
     ccs_acc, y_mod = ccs.get_acc(p0, p1, y_test)
+    print(f"ccs.first_prediction: {ccs.first_prediction}")
     print("CCS Layer {} accuracy: {}".format(layer, ccs_acc))
     return y_mod
 

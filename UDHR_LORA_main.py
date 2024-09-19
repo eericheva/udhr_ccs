@@ -13,10 +13,13 @@ from UDHR.get_UDHR_inputs import make_UDHR_prompts
 
 os.environ["CUDA_VISIBLE_DEVICES"] = cuda_name
 run_type = "eval_"
-# run_type = ""
 post_name = "_1"
 
 
+# post_name = "_base_short_rather"
+
+
+# run_type = ""
 # post_name = model_name
 
 
@@ -24,8 +27,9 @@ post_name = "_1"
 def do_lora():
     print(model_name)
     BTC_SIZE = 16
-    # prompts_btc_train, prompts_btc_test = make_UDHR_rather_prompts(post_name=post_name, BTC_SIZE=24,
-    # TRTE_split=0.5)  # 52
+    # prompts_btc_train, prompts_btc_test = make_UDHR_rather_prompts(
+    #         post_name=post_name, BTC_SIZE=24, TRTE_split=0.5
+    #         )  # 52
     prompts_btc_train, prompts_btc_test = make_UDHR_prompts(
         post_name=post_name, BTC_SIZE=52, TRTE_split=0.5
     )  # 52, 120
@@ -44,7 +48,7 @@ def do_lora():
     #     num_hidden_layers = int(model.metadata.get('gemma.block_count'))
     num_hidden_layers = 18
     for layer in range(num_hidden_layers, 0, -1):
-        # for layer in range(num_hidden_layers-6, 6, -1):
+        # for layer in [6]:  # 2, 5, 6
         ###################################################################
         print("Layer: " + str(layer))
         p2s = os.path.join(

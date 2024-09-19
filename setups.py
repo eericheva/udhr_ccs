@@ -10,7 +10,7 @@ from keys import WANBD_KEY
 wandb.login(key=WANBD_KEY)
 model_name = "_4"  # "_base_short"
 add_name = "_proba_loss"  # "_spin_loss", "_proba_loss"
-cuda_name = "0"
+cuda_name = "1"
 path2result = "../ethical_llms_data/UDHR_CCS/"  # "../ethical_llms_data/HH_CCS/"
 # path2result = "../ethical_llms_data/HH_CCS/" # "../ethical_llms_data/UDHR_CCS/"
 
