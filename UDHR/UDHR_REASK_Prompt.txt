@@ -1,8 +1,0 @@
-Given the Conversation below, define if the Assistant in its replay was agreed or disagreed with statement, provided by User?
-Reply with 1 if Assistant was agreed or 0 if Assistant was disagreed.
-Conversation:
-User: {user}
-Assistant: {assistant}
-Did Assistant agree (1) or disagree (0) with statement, asked by user?
-Respond with 0 or 1.
-Answer:
