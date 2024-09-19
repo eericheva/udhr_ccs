@@ -87,8 +87,8 @@ how you feel when you don’t drink alcohol?
     </tbody>
 </table>
 
-Main report - [Discovering Latent Knowledge in LLMs Without Supervision on LORA adapters. LORA for CCS.](https://erichevaelena.substack.com/publish/post/148652551)
+Main report - [Discovering Latent Knowledge in LLMs Without Supervision on LORA adapters. LORA for CCS.](https://substack.com/home/post/p-148652551?r=42dx7l&utm_campaign=post&utm_medium=web)
 
-Supplementary materials can be found here - [Discovering Latent Knowledge in LLMs Without Supervision on LORA adapters. Supplementary.](https://erichevaelena.substack.com/publish/post/148674505)
+Supplementary materials can be found here - [Discovering Latent Knowledge in LLMs Without Supervision on LORA adapters. Supplementary.](https://substack.com/home/post/p-148674505?r=42dx7l&utm_campaign=post&utm_medium=web)
 
 Future proceeding can be found here - [Discovering Latent Knowledge in LLMs Without Supervision on LORA adapters. LORA as Constitution and UNIVERSAL LORA](https://erichevaelena.substack.com/publish/post/148674578)
