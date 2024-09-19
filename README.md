@@ -12,6 +12,10 @@ We proceed this idea further for circumventing following issue. Due to linear pr
 
 We propose to train nonlinear LORA for residual stream for some model layer and we hope that this LORA, trained on one type of prompts will generalize to other dataset and rephrasing prompts. So we can elicit latent model knowledge (about safe or harm behaviour) just by adding this LORA to model layer.
 
+![main table results](figures/main_table.png)
+
+![result on test dataset](figures/UDHR_LORA_trained_on_4/allLORA_3.png)
+
 We also adapted the purpose of CCS method from discovering model latent factual knowledge to discovering model latent knowledge about safe and harm behaviour ot intentions.
 
 Main report - [Discovering Latent Knowledge in LLMs Without Supervision on LORA adapters. LORA for CCS.](https://erichevaelena.substack.com/publish/post/148652551)
